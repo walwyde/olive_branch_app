@@ -33,6 +33,7 @@ import Messages from "./components/messaging/Messages";
 import Conversation from "./components/messaging/Conversation";
 import Alerts from "./components/layouts/Alerts";
 import PrivateRoute from "./components/layouts/PrivateRoute";
+import UpdatePassword from "./components/Forms/UpdatePassword";
 
 import { loadUser } from "./Actions/auth";
 
@@ -48,7 +49,7 @@ const App = () => {
           <Navbar />
           <Alerts />
           <Switch>
-          <Route exact path="/" component={Landing} />
+            <Route exact path="/" component={Landing} />
             <div className="container">
               <PrivateRoute
                 exact
@@ -70,6 +71,11 @@ const App = () => {
                 path="/edit-staff-profile/:id"
                 component={EditStaffProfile}
               />
+              <Route
+                exact
+                path="/reset-password/:token"
+                component={UpdatePassword}
+              />
               <Route exact path="/content" component={Content} />
               <Route exact path="/profile/:id" component={ProfileView} />
               <Route exact path="/resources" component={Resources} />
@@ -88,11 +94,9 @@ const App = () => {
               />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <Route exact path="/not-found" component={NotFound} />
-
               <ToastContainer />
             </div>
-              <Redirect to="/not-found" />
-
+            <Redirect to="/not-found" />
           </Switch>
         </div>
       </Router>

@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: true
+    required: true,
   },
   password: {
     type: String,
@@ -26,6 +26,8 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  resetToken: String,
+  tokenExpiration: Date,
   isAdmin: {
     type: Boolean,
     default: false,

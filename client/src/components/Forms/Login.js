@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import { login } from "../../Actions/auth";
+import axios from "axios";
 
 class Login extends Form {
   state = {
@@ -15,8 +16,6 @@ class Login extends Form {
     },
     resetData: {
       email: "",
-      password: "",
-      newpassword: "",
     },
     errors: {},
     showPass: false,
@@ -27,15 +26,10 @@ class Login extends Form {
     email: Joi.string().required().label("Email"),
     password: Joi.string().required().min(0).max(8).label("Password"),
   };
+
   passwordSchema = {
     email: Joi.string().required().label("Email"),
-    password: Joi.string().required().min(0).max(8).label("Password"),
-    newpassword: Joi.string()
-      .required()
-      .min(0)
-      .max(8)
-      .label("Password"),
-  };
+  }
 
   validateInput = (e) => {
     const { name, value } = e.target;
@@ -68,17 +62,30 @@ class Login extends Form {
     this.setState({ loginAttempts: attempts + 1 });
     this.props.login(this.state.data, this.props.history);
   };
-  resetPasswordValidate = () => {
-    const options = { abortEarly: false };
-    const body = { ...this.state.resetData };
-    delete body._id;
-    const { error } = Joi.validate(body, this.passwordSchema, options);
-    if (!error) return null;
-    const errors = {};
-    for (let item of error.details) {
-      errors[item.path[0]] = item.message;
+
+  initPasswordReset = async (e) => {
+    try {
+      e.preventDefault();
+      console.log(this.state.resetData);
+      const res = await axios.post(
+        "http://localhost:3001/api/auth/forgot",
+        this.state.resetData
+      );
+      console.log(res)
+      if (res.data.success) {
+        toast.success(res.data.success.msg);
+      } else {
+        toast.error(res.data.error.msg);
+      }
+    } catch (err) {
+      console.log(err.response);
+      if(err.response.data.error) {
+        toast.error(err.response.data.error.msg);
+      } else {
+        toast.error("Something went wrong!! please try again later")
+      }
     }
-    return errors;
+   
   };
 
   render() {
@@ -127,7 +134,7 @@ class Login extends Form {
         <div id="password-reset" className="modal green">
           <div className="modal-content">
             <h5 className="yellow-text center">Password Reset</h5>
-            <form>
+            <form onSubmit={(e) => this.initPasswordReset(e)}>
               <div className="input-field">
                 <input
                   onChange={(e) => this.resetDataChange(e)}
@@ -144,61 +151,11 @@ class Login extends Form {
 
               <div className="modal-footer green">
                 {
-                  <button
-                    href="#passwordModal-2"
-                    className="btn modal-trigger modal-close"
-                  >
+                  <button href="#" className="btn modal-close">
                     Next
                   </button>
                 }
               </div>
-            </form>
-          </div>
-        </div>
-
-        <div className="modal green" id="passwordModal-2">
-          <div className="modal-content">
-            <h5 className="yellow-text center">Create New password</h5>
-            <form onSubmit={(e) => this.handlePasswordReset(e)}>
-              <div className="input-field">
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  value={resetData.password}
-                  onChange={(e) => this.resetDataChange(e)}
-                />
-                <label htmlFor="password">New Password</label>
-                {errors && (
-                  <div className="red-accent-4 yellow-text">
-                    {errors.password}
-                  </div>
-                )}
-              </div>
-              <div className="input-field">
-                <input
-                  type="password"
-                  name="newpassword"
-                  id="newpassword"
-                  value={resetData.newpassword}
-                  onChange={(e) => this.resetDataChange(e)}
-                />
-                <label htmlFor="newpassword">Confirm New Password</label>
-                {errors && (
-                  <div className="red-accent-4 yellow-text">
-                    {errors.newpassword}
-                  </div>
-                )}
-              </div>
-          <div className="modal-footer green">
-            {
-              <button
-                className="btn modal-close"
-              >
-                Reset
-              </button>
-            }
-          </div>
             </form>
           </div>
         </div>

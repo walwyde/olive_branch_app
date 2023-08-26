@@ -59,7 +59,8 @@ export const login = (formData, history) => async (dispatch) => {
     dispatch(loadUser());
     dispatch(setAlert("You Have Been Logged In", "success"));
   } catch (err) {
-    console.log(err);
+    console.log(err.response);
+    dispatch(setAlert(err.response.data.errors[0].msg, "error"));
 
     dispatch({
       type: login_fail,
