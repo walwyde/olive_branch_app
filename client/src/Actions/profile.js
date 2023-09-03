@@ -25,7 +25,7 @@ export const loadCurrentProfile = () => async (dispatch) => {
         payload: res.data,
       });
   } catch (err) {
-    console.log(err);
+    console.log(err.response);
     dispatch({
       type: profile_error,
     });
@@ -33,24 +33,16 @@ export const loadCurrentProfile = () => async (dispatch) => {
 };
 
 export const createProfile = (formData, history) => async (dispatch) => {
-  const config = {
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-    },
-  };
   try {
-    const res = await axios.post(
-      "http://localhost:5005/api/profile/me",
-      formData,
-      config
-    );
-
+    console.log(formData);
+    const res = await axios.post("/api/profile/me", formData);
+    console.log(res);
     if (res.errors)
       return res.errors.forEach((error) =>
         dispatch(setAlert(error.msg, "danger"))
       );
 
-    if (res.data !== null) history.push("/profile");
+    if (res.data !== null) history.push("/dashboard");
 
     dispatch({
       type: load_profile,
@@ -59,15 +51,14 @@ export const createProfile = (formData, history) => async (dispatch) => {
 
     dispatch(loadUser());
 
-    dispatch(setAlert("Registration Successful", "success"));
+    dispatch(setAlert("Profile Created", "success"));
   } catch (err) {
-    console.log(err);
-    const errors = err.response.data.errors;
-
-    dispatch({
-      type: profile_error,
-      payload: errors ? errors : err.response.data,
-    });
+    console.log(err.response);
+    if (err.response.data.errors) {
+      dispatch(setAlert(err.response.data.errors[0].msg, "danger"));
+    } else {
+      dispatch(setAlert(err.response.statusText, "danger"));
+    }
   }
 };
 
@@ -79,36 +70,38 @@ export const createProfile = (formData, history) => async (dispatch) => {
  * @param userType - Optional user type, defaults to "user"
  * @returns Promise<void>
  */
-export const editProfile =
-  (formData) => async (dispatch) => {
-    try {
-     
+export const editProfile = (formData, profileId, history) => async (dispatch) => {
+  try {
+    dispatch({
+      type: load_profile,
+      payload: formData,
+    });
 
-      dispatch({
-        type: load_profile,
-        payload: formData,
-      });
+    const res = await axios.post(`/api/profile/${profileId}`, formData);
+    console.log(res);
 
-      dispatch(setAlert("Profile Edit Successful", "success"));
-    } catch (err) {
-      console.log(err);
-      dispatch(setAlert("Profile Edit Error", "danger"));
+    if(res && res.status >= 200 && res.status < 300) history.push("/dashboard");
 
-      dispatch({
-        type: profile_error,
-      });
-    }
-  };
+    dispatch(setAlert("Profile Edit Successful", "success"));
+  } catch (err) {
+    console.log(err);
+    dispatch(setAlert("Profile Edit Error", "danger"));
 
-export const getProfileById = (userId) => async (dispatch) => {
+    dispatch({
+      type: profile_error,
+    });
+  }
+};
+
+export const getProfileById = (profileId) => async (dispatch) => {
   try {
     dispatch({
       type: clear_profile,
     });
 
-    const response = await axios.get(
-      `http://localhost:5005/api/profile/${userId}`
-    );
+    const response = await axios.get(`/api/profile/${profileId}`);
+
+    console.log(response.data);
 
     if (response) {
       dispatch({
@@ -116,19 +109,22 @@ export const getProfileById = (userId) => async (dispatch) => {
         payload: response.data,
       });
     }
+    return response.data;
   } catch (err) {
-    console.log(err);
+    console.log(err.response);
+    dispatch(setAlert(err.response.statusText, "danger"))
     dispatch({
       type: profile_error,
       payload: err.response.data,
     });
+    return null;
   }
 };
 
 export const deleteAccount = () => async (dispatch) => {
   if (window.confirm("Are you sure? This cannot be undone!")) {
     try {
-      await axios.delete("http://localhost:5005/api/profile/me");
+      await axios.delete("/api/profile/me");
 
       dispatch({
         type: delete_account,
@@ -173,7 +169,7 @@ export const addAvailability = (formData) => async (dispatch) => {
 export const updateProfileImage = (formData) => async (dispatch) => {
   try {
     const res = await axios.post(
-      "http://localhost:5005/api/profile/avatar",
+      "http://localhost:3001/api/profile/avatar",
 
       formData,
       {

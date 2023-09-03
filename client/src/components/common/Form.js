@@ -8,8 +8,9 @@ class Form extends Component {
 
   validate = () => {
     const options = { abortEarly: false };
-    const body = {...this.state.data}
-    delete body._id
+    const body = { ...this.state.data };
+    delete body._id;
+    delete body.availability;
     const { error } = Joi.validate(body, this.Schema, options);
     if (!error) return null;
     const errors = {};
@@ -35,7 +36,6 @@ class Form extends Component {
     data[input.name] = input.value;
     this.setState({ data, errors });
   };
-
 
   handleSubmit = (e) => {
     e.preventDefault();

@@ -2,7 +2,7 @@ import React from "react";
 import Joi from "joi-browser";
 import axios from "axios";
 import { toast } from "react-toastify";
-const UpdatePassword = ({ match: { params } }) => {
+const UpdatePassword = ({ match: { params }, history }) => {
   const [data, setData] = React.useState({
     newPassword: "",
     confirmPassword: "",
@@ -52,6 +52,7 @@ const UpdatePassword = ({ match: { params } }) => {
       const success = res.data.success;
       if (success) {
         toast.success(success.msg);
+        history.push("/login");
       } else {
         errors.map((e) => toast.error(e.msg));
       }

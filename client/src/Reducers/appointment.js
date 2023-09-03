@@ -69,6 +69,13 @@ export default function (state = initialState, action) {
       const index = state.appointments.indexOf(app);
       apps[index] = payload;
       return { ...state, appointments: apps, loading: false };
+      case appointment_error:
+      case delete_appointment_error:
+      return {
+        ...state,
+        error: payload,
+        loading: false,
+      };
     default:
       return state;
   }

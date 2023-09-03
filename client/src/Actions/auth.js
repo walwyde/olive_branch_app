@@ -1,5 +1,5 @@
-import axios from 'axios'
-import  { setHeader } from "../Utils/httpService";
+import axios from "axios";
+import { setHeader } from "../Utils/httpService";
 import {
   login_fail,
   login_success,
@@ -10,12 +10,12 @@ import {
   user_loaded,
   load_error,
 } from "./types";
-import {setAlert} from "../Utils/setAlert";
+import { setAlert } from "../Utils/setAlert";
 
 export const loadUser = () => async (dispatch) => {
   const token = localStorage.getItem("token");
 
-  if(token) setHeader(token);
+  if (token) setHeader(token);
 
   try {
     const res = await axios.get("/api/auth");
@@ -24,17 +24,17 @@ export const loadUser = () => async (dispatch) => {
         type: load_error,
       });
     }
-    console.log(res)
-    dispatch(setAlert("user loaded", "success"));
-
+    console.log(res);
     dispatch({
       type: user_loaded,
       payload: res.data,
     });
+    return res;
+
   } catch (err) {
     console.log(err);
 
-    dispatch(setAlert("load user error", "danger"));
+    dispatch(setAlert("You are not logged in", "danger"));
     dispatch({
       type: load_error,
     });
@@ -43,10 +43,7 @@ export const loadUser = () => async (dispatch) => {
 
 export const login = (formData, history) => async (dispatch) => {
   try {
-    const res = await axios.post(
-      "/api/auth",
-      formData
-    );
+    const res = await axios.post("/api/auth", formData);
 
     if (res) history.replace("/dashboard");
 
@@ -69,12 +66,9 @@ export const login = (formData, history) => async (dispatch) => {
 };
 export const register = (formData, history) => async (dispatch) => {
   try {
-    const res = await axios.post(
-      "http://localhost:3001/api/users",
-      formData
-    );
+    const res = await axios.post("http://localhost:3001/api/users", formData);
 
-    console.log(res)
+    console.log(res);
 
     if (res) {
       dispatch({
@@ -88,8 +82,10 @@ export const register = (formData, history) => async (dispatch) => {
       history.replace("/dashboard");
     }
   } catch (err) {
-if(err.response.data.errors) return err.response.data.errors.map(e => dispatch(setAlert(e.msg, "error")))
-
+    if (err.response.data.errors)
+      return err.response.data.errors.map((e) =>
+        dispatch(setAlert(e.msg, "error"))
+      );
 
     dispatch(setAlert(err.response.statusText, "error"));
     dispatch({

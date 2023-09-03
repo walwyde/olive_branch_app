@@ -1,32 +1,60 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import Loading from "./layouts/Loading";
 
-import { loadCurrentProfile } from "../Actions/profile";
+import {
+  deleteAccount,
+  loadCurrentProfile,
+} from "../Actions/profile";
 
 const Dashboard = ({
+  deleteAccount,
   loadCurrentProfile,
   auth: { loading: authloading, user },
   profile: { profile, loading },
 }) => {
-
   React.useEffect(() => {
-    loadCurrentProfile()
-  }, [loading, authloading])
-  return (
+    loadCurrentProfile();
+  }, [loading, authloading]);
+
+  const client = user && !user.isStaff;
+  const staff = user && user.isStaff;
+
+  return loading ? (
+    <Loading />
+  ) : !loading && !profile ? (
+    <Fragment>
+      <h1 className="center yellow-text">Dashboard</h1>
+      <h4 className="lead">
+        <i className="fas fa-user"></i> Welcome{" "}
+        {user && user.fullname.split(" ")[0]}
+      </h4>
+      <hr />
+      <p className="lead">
+        <Link to="/create-profile" className="btn btn-primary">
+          Create Profile
+        </Link>
+      </p>
+    </Fragment>
+  ) : !loading && !authloading && client && profile ? (
     <div>
       <h3 className="yellow-text center">Dashboard</h3>
 
+      <hr />
+
       <div className="row">
         <div className="col s12 m5">
-          <div className="card">
+          <div className="card panel-card hoverable">
             <div className="card-image">
-              <img
-                src="https://picsum/photos/400"
-                alt="user"
-                className="responsive"
-              />
+              <Link to={`/edit-avatar/${profile._id}`}>
+                <img
+                  src={`http://localhost:3001/${user.avatar}`}
+                  alt="user"
+                  className="responsive"
+                />
+              </Link>
             </div>
             <div className="card-content">
               <p className="card-title center">
@@ -34,31 +62,27 @@ const Dashboard = ({
                   style={{ position: "absolute", right: "3rem", top: 50 }}
                   className="badge yellow accent-4 "
                 >
-                  24
+                  {profile.age}
                 </span>
-                John Doe
+                {user.fullname}
               </p>
-              <p className="card-text">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                Voluptate veritatis vitae tempore illo qui velit, veniam
-                voluptatibus sequi quas, officia dignissimos temporibus officiis
-                praesentium nulla eaque? Ad impedit, quidem necessitatibus
-                laudantium officiis assumenda fugit ex, consequuntur ut illo
-                aut, optio omnis sit. Totam eaque magnam, veniam accusamus nam
-                doloremque placeat?
-              </p>
+              <p className="card-text">{profile.bio}</p>
             </div>
             <div className="card-action row">
               <div className="col s6">
                 <Link
                   className="btn-small yellow darken-3"
-                  to={`/edit-profile/22`}
+                  to={`/edit-profile/${profile._id}`}
                 >
                   Edit Profile
                 </Link>
               </div>
               <div className="col s6">
-                <Link className="btn-small red darken-3" to={`/delete-profile`}>
+                <Link
+                  onClick={() => deleteAccount()}
+                  className="btn-small red darken-3"
+                  to="#"
+                >
                   Delete Profile
                 </Link>
               </div>
@@ -67,69 +91,110 @@ const Dashboard = ({
         </div>
         <div className="col s12 m5 push-l2">
           <span className="badge left red accent-4 white-text">Addiction</span>{" "}
-          <h5>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda,
-            nihil.
-          </h5>
+          <h5>{user.addiction}</h5>
           <hr />
           <span className="badge left orange accent-4 white-text">History</span>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem odit
-            quas molestias eligendi sint similique debitis, atque dolorum
-            exercitationem dolorem minus incidunt quod recusandae nesciunt
-            culpa, cumque assumenda dolor necessitatibus.
-          </p>
+          <p>{profile.history}</p>
           <hr />
           <span className="badge left blue accent-4 white-text">Contact</span>
           <div>
             <p>
               <i className="material-icons left">phone</i>
-              222 333 555
+              {profile.phone}
             </p>
             <p>
               <i className="material-icons left">email</i>
-              mail@mail.com
+              {profile.email}
             </p>
             <p>
               <i className="material-icons left">pin</i>
-              Jos, Jos South
+              {profile.address}
             </p>
           </div>
-          <hr />
-          <span className="badge left blue darken-1 white-text">
-            Medications
-          </span>
-          <ul>
-            <li>1 ---> Lorem ipsum dolor sit amet.</li>
-            <li> 2 --> Lorem ipsum dolor sit amet.</li>
-            <li>3----> Lorem ipsum dolor sit amet.</li>
-          </ul>
           <hr />
           <span className="badge left blue white-text">doctor</span>
           <div>
             <p>
               <i className="material-icons left">male</i>
-              Doctor Sarah Smith
+              {profile.docName}
             </p>
 
             <p>
               <i className="material-icons">phone</i>
-              222 333 444
+              {profile.docContact}
             </p>
 
             <p>
               <i className="material-icons">pin</i>
-              Salman Specialist Hospital, Jos North
+              {profile.docAddress}
             </p>
           </div>
         </div>
       </div>
     </div>
+  ) : !loading && !authloading && staff && profile && (
+    <Fragment>
+      <h4 className="center yellow-text">User DashBoard</h4>
+      <div
+        style={{ width: "500px", margin: "auto", marginTop: "2rem" }}
+        className="center card panel-card hoverable"
+      >
+        <div className="card-image">
+          <Link to={`/edit-avatar/${profile._id}`}>
+            <img
+              src={`http://localhost:3001/${user.avatar}`}
+              alt="user"
+              className="responsive"
+              style={{ width: "100%" }}
+            />
+          </Link>
+        </div>
+        <div className="card-content">
+          <p className="card-title center">
+            <span
+              style={{ position: "absolute", right: "3rem", top: 50 }}
+              className="badge yellow accent-4 "
+            >
+              {profile.age}
+            </span>
+            <span>
+              {profile.title.charAt(0).toUpperCase() + profile.title.slice(1)}
+            </span>{" "}
+            {user.fullname}
+          </p>
+          <p className="card-text">{profile.employer}</p>
+          <p className="card-text">{profile.bio}</p>
+          <p className="card-text">{profile.address}</p>
+          <p className="card-text">{profile.email}</p>
+          <p className="card-text">{profile.phone}</p>
+        </div>
+        <div className="card-action row">
+          <div className="col s6">
+            <Link
+              className="btn-small yellow darken-3"
+              to={`/edit-profile/${profile._id}`}
+            >
+              Edit Profile
+            </Link>
+          </div>
+          <div className="col s6">
+            <Link
+              onClick={() => deleteAccount()}
+              className="btn-small red darken-3"
+              to="#"
+            >
+              Delete Profile
+            </Link>
+          </div>
+        </div>
+      </div>
+    </Fragment>
   );
 };
 
 Dashboard.propTypes = {
   loadCurrentProfile: PropTypes.func.isRequired,
+  deleteAccount: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
 };
@@ -139,4 +204,6 @@ const mapStateToProps = (state) => ({
   profile: state.profile,
 });
 
-export default connect(mapStateToProps, { loadCurrentProfile })(Dashboard);
+export default connect(mapStateToProps, { loadCurrentProfile, deleteAccount })(
+  Dashboard
+);

@@ -4,6 +4,7 @@ const connectDB = require("./utils/db");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
 const morgan = require("morgan");
+const path = require('path')
 
 const messageRoute = require("./routes/api/messages");
 const authRoutes = require("./routes/api/auth");
@@ -15,10 +16,12 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/public", express.static(path.join(__dirname, "public")));
+
 
 app.use("/api/messages", messageRoute);
 app.use("/api/auth", authRoutes);
-app.use("/api/appointments", appRoutes);
+app.use("/api/appointment", appRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/profile", profileRoutes);
 

@@ -5,6 +5,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  avatar: {
+    type: String,
+    required: true,
+  },
   addiction: {
     type: String,
     required: true,

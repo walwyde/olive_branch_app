@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getAppointment } from "../../Actions/appointment";
 import Moment from "react-moment";
+import Loading from "../layouts/Loading";
+import { init_convo } from "../../Actions/types";
 
 const Appointment = ({
   getAppointment,
@@ -14,91 +16,127 @@ const Appointment = ({
     getAppointment(match.params.id);
   }, []);
 
-  return !loading && appointment && appointment.user && appointment.doctor ? (
+  return loading ? (
+    <Loading />
+  ) : !loading && !appointment ? (
+    <div>oops! cannot retrieve information..</div>
+  ) : (!loading && !appointment.doctor) || (!loading && !appointment.user) ? (
     <Fragment>
-      <div className="jumbotron text-center">
-        <h3 className="lead text-primary">Appointment Details</h3>
-      </div>
-      <div className="card mb-5">
-        <div className="card-body">
-          <h3 className="card-title text-center">
-            Appointment With{" "}
-            <Link
-              className="text-info"
-              to={`/profile/${appointment.doctor._id}`}
-            >
-              {appointment.doctor.title} {appointment.doctor.name}
-            </Link>
-          </h3>
+      <div className="card center">
+        <div className="card-content">
+          <p className="card-title yellow-text">Cannot Hold</p>
+          <span>
+            <i className="material-icons red-text">error</i>
+          </span>
+
           <p className="card-text">
-            <span>Client:</span>{" "}
-            <Link
-              className="card p-1 text-info m-3 lead"
-              to={`/profile/${appointment.user._id}`}
-            >
-              {appointment.user.name}
-            </Link>
-          </p>
-          <p
-            className={
-              appointment.status === "pending"
-                ? "text-muted card-title"
-                : "card-title"
-            }
-          >
-            Status: {appointment.status}
-          </p>
-          <p
-            className={
-              appointment.status === "pending"
-                ? "text-muted card-title"
-                : "card-title"
-            }
-          >
-            Time: {appointment.time}
-          </p>
-          <p
-            className={
-              appointment.status === "pending"
-                ? "text-muted card-title"
-                : "card-title"
-            }
-          >
-            Date: <Moment fromNow>{appointment.date}</Moment>
-          </p>
-          <p
-            className={
-              appointment.status === "pending"
-                ? "text-muted card-title"
-                : "card-title"
-            }
-          >
-            Doctor's Contact: {appointment.doctor.contactDetails.phone}
-          </p>
-          <p
-            className={
-              appointment.status === "pending"
-                ? "text-muted card-title"
-                : "card-title"
-            }
-          >
-            Doctor's Address: {appointment.doctor.contactDetails.address}
+            One or more participants absent from site...
           </p>
         </div>
-
-        <Link to="/appointments" className="card-link btn btn-primary btn-sm">
-          {" "}
-          Go Back{" "}
-        </Link>
+        <div className="card-action center">
+          <Link to="/appointments" className="card-link btn btn-primary btn-sm">
+            {" "}
+            Go Back{" "}
+          </Link>
+        </div>
       </div>
     </Fragment>
   ) : (
-    <Fragment>
-      <div className="jumbotron text-center">
-        <h3 className="lead text-primary">Cannot Hold</h3>
-        <p className="lead">One or more participants absent from site...</p>
-      </div>
-    </Fragment>
+    !loading &&
+    appointment && (
+      <Fragment>
+        <div className="center">
+          <h3 className="center yellow-text">Appointment Details</h3>
+        </div>
+        <div
+          style={
+            appointment.status === "pending"
+              ? { color: "#ccc" }
+              : { color: "green" }
+          }
+          className="card"
+        >
+          <div className="card-content">
+            <h3 className="card-title text-center">
+              Appointment With{" "}
+              <Link
+                className="text-info"
+                to={`/profile/${appointment.doctor._id}`}
+              >
+                {appointment.doctor.title.charAt(0).toUpperCase() +
+                  appointment.doctor.title.slice(1).toLowerCase()}{" "}
+                {appointment.doctor.user.fullname}
+              </Link>
+            </h3>
+            <p className="card-title ">
+              <span>Client:</span>{" "}
+              <Link
+                className=" text-info"
+                to={`/profile/${appointment.user._id}`}
+              >
+                <span>{appointment.user.fullname}</span>
+              </Link>
+            </p>
+            <hr />
+            <p
+              className={
+                appointment.status === "pending"
+                  ? "text-muted card-title"
+                  : "card-title"
+              }
+            >
+              Status: {appointment.status}
+            </p>
+            <p
+              className={
+                appointment.status === "pending"
+                  ? "text-muted card-title"
+                  : "card-title"
+              }
+            >
+              Time: {appointment.time}
+            </p>
+            <p
+              className={
+                appointment.status === "pending"
+                  ? "text-muted card-title"
+                  : "card-title"
+              }
+            >
+              Date: <Moment fromNow>{appointment.date}</Moment>
+            </p>
+            <p
+              className={
+                appointment.status === "pending"
+                  ? "text-muted card-title"
+                  : "card-title"
+              }
+            >
+              Doctor's Contact: {appointment.doctor.phone}
+            </p>
+            <p
+              className={
+                appointment.status === "pending"
+                  ? "text-muted card-title"
+                  : "card-title"
+              }
+            >
+              Doctor's Address: {appointment.doctor.address}
+            </p>
+          </div>
+
+          <div className="card-action center">
+            <Link
+              to="/appointments"
+              className="card-link btn btn-primary btn-sm"
+            >
+              {" "}
+              Go Back{" "}
+            </Link>
+          </div>
+        </div>
+      </Fragment>
+    )
   );
 };
 

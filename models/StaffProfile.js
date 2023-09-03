@@ -4,7 +4,11 @@ const staffProfileSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    enum: ["Doctor", "Physician", "Councellor"],
+    enum: ["doctor", "pysician", "councellor"],
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
   specialty: {
     type: String,
@@ -34,6 +38,20 @@ const staffProfileSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  availability: [
+    {
+      day: {
+        type: String,
+        enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      },
+      time: {
+        type: String,
+        enum: ["Morning", "Afternoon", "Evening"],
+      },
+    }
+  ]
 });
 
-module.exports = mongoose.model("staffprofile", staffProfileSchema);
+const StaffProfile = mongoose.model("staffprofile", staffProfileSchema);
+
+module.exports = StaffProfile;

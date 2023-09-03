@@ -18,6 +18,7 @@ import Landing from "./components/Landing";
 import Content from "./components/Content";
 import NotFound from "./components/NotFound";
 import Navbar from "./components/layouts/Navbar";
+import ErrMessage from "./components/layouts/404";
 import Resources from "./components/Resources";
 import Login from "./components/Forms/Login";
 import Register from "./components/Forms/Register";
@@ -27,6 +28,7 @@ import EditStaffProfile from "./components/Forms/EditStaffProfile";
 import CreateStaffProfile from "./components/Forms/CreateStaffProfile";
 import { ToastContainer } from "react-toastify";
 import Appointments from "./components/appointments/Appointments";
+import Appointment from "./components/appointments/Appointment";
 import Dashboard from "./components/Dashboard";
 import ProfileView from "./components/ProfileView";
 import Messages from "./components/messaging/Messages";
@@ -34,6 +36,7 @@ import Conversation from "./components/messaging/Conversation";
 import Alerts from "./components/layouts/Alerts";
 import PrivateRoute from "./components/layouts/PrivateRoute";
 import UpdatePassword from "./components/Forms/UpdatePassword";
+import EditAvatar from "./components/Forms/EditAvatar";
 
 import { loadUser } from "./Actions/auth";
 
@@ -45,12 +48,12 @@ const App = () => {
   return (
     <Provider store={store}>
       <Router>
-        <div>
+        <Fragment>
           <Navbar />
           <Alerts />
-          <Switch>
-            <Route exact path="/" component={Landing} />
-            <div className="container">
+          <div className="container">
+            <Switch>
+              <PrivateRoute exact path='/edit-avatar/:id' component={EditAvatar} />
               <PrivateRoute
                 exact
                 path="/create-profile"
@@ -76,15 +79,16 @@ const App = () => {
                 path="/reset-password/:token"
                 component={UpdatePassword}
               />
-              <Route exact path="/content" component={Content} />
-              <Route exact path="/profile/:id" component={ProfileView} />
-              <Route exact path="/resources" component={Resources} />
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/login" component={Login} />
+
               <PrivateRoute
                 exact
                 path="/appointments"
                 component={Appointments}
+              />
+              <PrivateRoute
+                exact
+                path="/appointments/:id"
+                component={Appointment}
               />
               <PrivateRoute exact path="/messages" component={Messages} />
               <PrivateRoute
@@ -93,12 +97,19 @@ const App = () => {
                 component={Conversation}
               />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              < Route exact path="/404" component={ErrMessage} />
+              <Route exact path="/content" component={Content} />
+              <Route exact path="/profile/:id" component={ProfileView} />
+              <Route exact path="/resources" component={Resources} />
+              <Route exact path="/register" component={Register} />
+              <Route exact path="/login" component={Login} />
               <Route exact path="/not-found" component={NotFound} />
-              <ToastContainer />
-            </div>
-            <Redirect to="/not-found" />
-          </Switch>
-        </div>
+            </Switch>
+            <ToastContainer />
+          </div>
+          <Route exact path="/" component={Landing} />
+        </Fragment>
+          {/* <Redirect to="/not-found" /> */}
       </Router>
     </Provider>
   );

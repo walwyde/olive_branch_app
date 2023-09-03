@@ -5,12 +5,12 @@ const storage = multer.diskStorage({
     cb(null, "./public/images");
   },
   filename: function (req, file, cb) {
-    console.log(req.user);
     cb(null, file.originalname);
   },
 });
 
 const fileFilter = (req, file, cb) => {
+  console.log(file);
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||

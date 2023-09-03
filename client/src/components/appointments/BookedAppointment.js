@@ -1,9 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import {
-  withRouter,
-  Link,
-  Redirect,
-} from "react-router-dom";
+import { withRouter, Link, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import Moment from "react-moment";
 import { connect } from "react-redux";
@@ -19,79 +15,66 @@ const BookedAppointment = ({
   deleteAppointment,
   approveAppointment,
   appointment: { appointments, loading },
-  profile: { profile },
-  auth,
+  profile: { profile, loading: profileLoading },
+  auth: { authloading, user },
 }) => {
   useEffect(() => {
     getBookedAppointments();
   }, []);
 
-  if (!loading && auth.user && auth.user.isStaff && !profile)
-    return <Redirect to="/profile" />;
+  // if (!loading && !authloading && !profileLoading && user && user.isStaff && !profile)
+  //   return <Redirect to="/dashboard" />;
 
-  
-
-  if ((loading && appointments === null) || undefined)
-    return (
-      <Fragment>
-        <Loading />
-      </Fragment>
-    );
-
-  if (
-    (!loading && appointments === null) ||
-    (appointments && appointments.length === 0)
-  )
-    return (
-      <Fragment>
-        <h5 className="text-center text-primary lead text-muted">
-          No Appointments Yet
-        </h5>
-      </Fragment>
-    );
-
-  return (
-    !loading && appointments && (
-      <Fragment>
-        {appointments && appointments.length > 0 && (
-          <div>
-            {!loading &&
-              appointments.map((appointment) => (
-                <div className="card mb-3 bg-light" key={appointment._id}>
-                  <div className="card-body">
-                    <p className="card-title">Status: {appointment.status}</p>
-                    <p className="card-text">Time: {appointment.time}</p>
-                    <p className="card-text">
-                      <Moment format="MMMM Do YYYY">{appointment.date}</Moment>
-                    </p>
-                  </div>
-                  <Link
-                    to={`/appointments/${appointment._id}`}
-                    className="btn btn-info btn-sm"
-                  >
-                    View Appointment
-                  </Link>
-                  {auth.user && auth.user.isStaff && (
-                    <div>
-                    { appointment.status !== "approved" && <button
-                        onClick={() => approveAppointment(appointment._id)}
-                        className="btn btn-success btn-sm m-2 float-left"
-                      >
-                        Approve Appointment
-                      </button>}
-                      <button
-                        onClick={() => deleteAppointment(appointment._id)}
-                        className="btn btn-danger btn-sm m-2 float-right"
-                      >
-                        Delete Appointment
-                      </button>
-                    </div>
+  return loading ? (
+    <Loading />
+  ) : (!loading && !appointments) || appointments.length === 0 ? (
+    <Fragment>
+      <h5 className="center">
+        No Appointments Yet
+      </h5>
+    </Fragment>
+  ) : (
+    !authloading &&
+    user &&
+    !loading &&
+    appointments &&
+    appointments.length > 0 && (
+      <div>
+        {appointments.map((appointment) => (
+          <div className="card grey lighten-3 center" key={appointment._id}>
+            <div className="card-content">
+              <p className="card-title">Status: {appointment.status}</p>
+              <p className="card-text">Time: {appointment.time}</p>
+              <p className="card-text">
+                <Moment format="MMMM Do YYYY">{appointment.date}</Moment>
+              </p>
+            </div>
+            <div className="card-action">
+              <Link to={`/appointments/${appointment._id}`} className="btn ">
+                View Appointment
+              </Link>
+              {user && user.isStaff && (
+                <div>
+                  {appointment.status !== "approved" && (
+                    <button
+                      onClick={() => approveAppointment(appointment._id)}
+                      className="btn "
+                    >
+                      Approve Appointment
+                    </button>
                   )}
+                  <button
+                    onClick={() => deleteAppointment(appointment._id)}
+                    className="btn "
+                  >
+                    Delete Appointment
+                  </button>
                 </div>
-              ))}
+              )}
+            </div>
           </div>
-        )}
-      </Fragment>
+        ))}
+      </div>
     )
   );
 };

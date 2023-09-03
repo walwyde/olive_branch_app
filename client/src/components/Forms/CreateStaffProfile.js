@@ -1,14 +1,28 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { Redirect } from "react-router-dom";
 import Joi from "joi-browser";
 import Form from "../common/Form";
+import Loading from "../layouts/Loading";
+import { createProfile } from "../../Actions/profile";
+import { loadUser } from "../../Actions/auth";
+import { connect } from "react-redux";
+import { toast } from "react-toastify";
 
 class CreateStaffProfile extends Form {
+  async componentDidMount() {
+    const user = await this.props.loadUser();
+    this.setState({ user: user.data });
+    console.log(user);
+  }
   state = {
+    user: {},
     data: {
       title: "",
       fullname: "",
       specialty: "",
       bio: "",
+      gender: "",
       employer: "",
       address: "",
       phone: "",
@@ -16,6 +30,7 @@ class CreateStaffProfile extends Form {
       fee: "",
       availableDay: "",
       availableTime: "",
+      availability: [],
     },
     errors: {},
   };
@@ -25,6 +40,7 @@ class CreateStaffProfile extends Form {
     fullname: Joi.string().required().label("Your Full Name"),
     specialty: Joi.string().required().label("Field of Specialty"),
     bio: Joi.string().required().label("Brief Biography"),
+    gender: Joi.string().required().label("Your gender"),
     employer: Joi.string().required().label("Employer"),
     address: Joi.string().required().label("Your Address"),
     phone: Joi.number().required().label("Your Phone Number"),
@@ -37,18 +53,43 @@ class CreateStaffProfile extends Form {
   days = ["Select Day", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   times = ["Select Time", "Morning", "Afternoon", "Evening"];
 
-  addAvailability = (e) => {
+  addAvailability = async (e) => {
+     if (this.state.data.availableDay === "") {
+      toast.error("Please select a day.");
+      return;
+    }
+    if (this.state.data.availableTime === "") {
+      toast.error("Please select a time.");
+      return;
+    }
     e.preventDefault();
+    const { availableDay, availableTime } = this.state.data;
 
-    console.log({
-      data: this.state.data,
-    });
+    const availability = [
+      ...this.state.data.availability,
+      { day: availableDay, time: availableTime },
+    ];
+    console.log(availability);
+    await this.setState({ data: { ...this.state.data, availability } });
+
+    toast.info("availability slot added.");
   };
 
-  dosubmit = () => {
+  doSubmit = () => {
     console.log({ formData: this.state.data });
+    this.props.createProfile(this.state.data, this.props.history);
   };
   render() {
+    console.log(this.state.user.isStaff);
+    const { user } = this.state;
+    if (!user)
+      return (
+        <div style={{ marginTop: "100px" }}>
+          <Loading />
+        </div>
+      );
+    if (user && user.isStaff === false)
+      return <Redirect to="/create-profile" />;
     return (
       <div>
         <h2 className="center yellow-text">Create Staff Profile</h2>
@@ -57,6 +98,7 @@ class CreateStaffProfile extends Form {
           please Caplitalize your title, eg: Doctor, Councellor...
           {this.renderInput("title", "Enter Your Title", "text")}
           {this.renderInput("fullname", "Ful Name", "text")}
+          {this.renderInput("gender", "Gender", "text")}
           {this.renderInput("specialty", "field of Specialty", "text")}
           {this.renderInput("bio", "Brief Bio", "text")}
           {this.renderInput("employer", "Employer", "text")}
@@ -82,10 +124,23 @@ class CreateStaffProfile extends Form {
           >
             Add Availablity
           </span>
+          {this.renderButton("Submit", "btn")}
         </form>
       </div>
     );
   }
 }
 
-export default CreateStaffProfile;
+CreateStaffProfile.defaultProps = {
+  auth: PropTypes.object.isRequired,
+  createProfile: PropTypes.func.isRequired,
+  loadUser: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps, { createProfile, loadUser })(
+  CreateStaffProfile
+);

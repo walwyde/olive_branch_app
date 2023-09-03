@@ -26,58 +26,89 @@ const DoctorList = ({ doctors, newAppointment, loading }) => {
       {!loading &&
         doctors &&
         doctors.map((doctor) => (
-          <div key={doctor._id} className="mb-3">
-            <div>
-              <Link to={`profile/${doctor._id}`} className="text-primary">
-                {" "}
-                Doctor: {doctor.title} {doctor.user.name}
-              </Link>
-            </div>
-            <div>
-              <div>Available Time Slots:</div>
-              <ul>
-                {doctor.availability.map((slot) => (
-                  <li
-                    key={slot._id}
-                    onClick={() => setSelectedTimeSlot(slot.time)}
-                    active={selectedTimeSlot === slot.time}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <p> {slot.day}</p>
-                    <p>{slot.time}</p>
-                    <hr />
-                  </li>
-                ))}
-              </ul>
-
-              <div>Propose Date:</div>
-              <div className="input-field">
-
-                <input
-                  type="date"
-                  name="date"
-                  onChange={(e) => setDate(e.target.value)}
-                  style={{ cursor: "pointer" }}
-                  value={date}
-                  id="date"
-
-                />
-                <label htmlFor="date">Propose Date</label>
+          <div key={doctor._id} className="card">
+            <div className="card-content">
+              <div className="card-title">
+                <Link to={`profile/${doctor._id}`} className="blue-text">
+                  {" "}
+                  <h6>
+                    {" "}
+                    {doctor.title.charAt(0).toUpperCase() +
+                      doctor.title.slice(1).toLowerCase()}{" "}
+                    {doctor.user.fullname}
+                  </h6>
+                </Link>
               </div>
-            </div>
-            <div>
-              <button
-                onClick={() => setSelectedDoctor(doctor)}
-                disabled={!selectedTimeSlot}
-              >
-                Select Doctor
-              </button>{" "}
-              {selectedDoctor && (
-                <button
-                  onClick={() => handleAppointmentBooking()}
-                >
-                  Book Appointment
-                </button>
+
+              {doctor.availability.length > 0 && (
+                <div>
+                  <div>
+                    <div>Available Time Slots:</div>
+                    <ul>
+                      {doctor.availability.map((slot) => (
+                        <li
+                          key={slot._id}
+                          onClick={() => setSelectedTimeSlot(slot.time)}
+                          active={selectedTimeSlot === slot.time}
+                          style={
+                            selectedTimeSlot === slot.time
+                              ? {
+                                  backgroundColor: "green",
+                                  margin: "0 auto",
+                                  width: "75%",
+                                  padding: "",
+                                  borderRadius: "10px",
+                                  border: "2px solid yellow",
+                                  color: "yellow",
+                                  textAlign: "center",
+                                  fontSize: "1.5rem",
+                                }
+                              : {
+                                  color: "black",
+                                  backgroundColor: "#cdc",
+                                  borderRadius: "10px",
+                                  border: "2px solid green",
+                                  textAlign: "center",
+                                }
+                          }
+                        >
+                          {"Slot: "} <span> {slot.day}</span> {"  -->  "}
+                          <span>{slot.time}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div>Propose Date:</div>
+                    <div className="input-field">
+                      <input
+                        type="date"
+                        name="date"
+                        onChange={(e) => setDate(e.target.value)}
+                        style={{ cursor: "pointer" }}
+                        value={date}
+                        id="date"
+                      />
+                      <label htmlFor="date">Propose Date</label>
+                    </div>
+                  </div>
+                  <div className="card-action">
+                    <button
+                      className="btn-small"
+                      onClick={() => setSelectedDoctor(doctor)}
+                      disabled={!selectedTimeSlot}
+                    >
+                      Select Doctor
+                    </button>{" "}
+                    {selectedDoctor && (
+                      <button
+                        className="btn-small"
+                        onClick={() => handleAppointmentBooking()}
+                      >
+                        Book Appointment
+                      </button>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </div>

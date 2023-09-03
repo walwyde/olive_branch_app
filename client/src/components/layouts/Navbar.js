@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import {logout} from '../../Actions/auth'
-import {connect} from 'react-redux'
+import { logout } from "../../Actions/auth";
+import { connect } from "react-redux";
 
-const Navbar = ({logout, auth: {user, isAuthenticated, loading}}) => {
+const Navbar = ({ logout, auth: { user, isAuthenticated, loading } }) => {
   const authLinks = () => (
     <div>
       <li>
@@ -23,7 +23,9 @@ const Navbar = ({logout, auth: {user, isAuthenticated, loading}}) => {
         <Link to="/appointments"> TALK TO US </Link>
       </li>
       <li>
-        <Link onClick={() => logout()} to="#">LOGOUT </Link>
+        <Link onClick={() => logout()} to="#">
+          LOGOUT{" "}
+        </Link>
       </li>
     </div>
   );
@@ -75,24 +77,24 @@ const Navbar = ({logout, auth: {user, isAuthenticated, loading}}) => {
             <i className="material-icons">menu</i>
           </Link>
           <ul className="right hide-on-small-only">
-            { !loading && isAuthenticated ? authLinks() : guestLinks()}
+            {!loading && isAuthenticated ? authLinks() : guestLinks()}
           </ul>
         </div>
       </nav>
 
       <ul className="sidenav" id="mobile-icons">
-      { !loading && isAuthenticated ? authLinks() : guestLinks() }
+        {!loading && isAuthenticated ? authLinks() : guestLinks()}
       </ul>
     </Fragment>
   );
 };
 
 Navbar.propTypes = {
-  auth: PropTypes.object.isRequired
-}
+  auth: PropTypes.object.isRequired,
+};
 
-const mapStateToProps = state => ({
-  auth: state.auth
-})
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
 
-export default connect(mapStateToProps, {logout})(Navbar);
+export default connect(mapStateToProps, { logout })(Navbar);

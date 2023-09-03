@@ -14,38 +14,41 @@ const Appointments = ({
   getDoctors,
   appointment: { doctors, loading },
   auth,
-  history
+  history,
 }) => {
   useEffect(() => {
     getDoctors();
   }, []);
 
   return auth.user && auth.user.isStaff ? (
-    <Fragment>
-      <div className="jumbotron">
-        <h4 className="lead text-primary">Booked Appointments</h4>
-      </div>
+    <div className="center">
+      <h4 className="yellow-text">Booked Appointments</h4>
       <BookedAppointment />
-    </Fragment>
+    </div>
   ) : (
     <Fragment>
-      <div className="row">
-        <div className="col-md-7">
+      <div className="row white-text">
+        <div className="col m7">
           {!loading && doctors.length < 1 ? (
-            <h1 className="heading text-primary my-5">No Doctors Available</h1>
+            <h5 className="yellow-text">No Doctors Available</h5>
           ) : (
             <div>
-              <h1>Available Doctors</h1>
+              <h5 className="yellow-text">Available Doctors</h5>
               <DoctorList doctors={doctors} loading={loading} />
             </div>
           )}
 
-          <button onClick={() => history.push("/dashboard")} className="btn btn-primary btn-sm" >Back To Dashboard</button>
+          <button
+            onClick={() => history.push("/dashboard")}
+            className="btn-small"
+          >
+            Back To Dashboard
+          </button>
         </div>
 
-        <div className="col-md-5">
-          <div className="jumbotron text-center">
-            <h4>Booked Appointments</h4>
+        <div className="col m5">
+          <div className="center">
+            <h4 className="yellow-text">Booked Appointments</h4>
           </div>
           <BookedAppointment />
         </div>

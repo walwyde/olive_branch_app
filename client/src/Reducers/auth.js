@@ -6,6 +6,7 @@ import {
   login_success,
   login_fail,
   log_out,
+  profile_image_update,
   delete_account,
 } from "../Actions/types";
 
@@ -32,6 +33,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAuthenticated: true,
+        user: payload,
+        loading: false,
+      };
+    case profile_image_update:
+      return {
+        ...state,
         user: payload,
         loading: false,
       };

@@ -7,6 +7,7 @@ import {
   delete_experience,
   delete_profile_error,
   load_availability,
+  profile_image_update,
 } from "../Actions/types";
 
 const initialState = {
@@ -58,6 +59,7 @@ export default function profile(state = initialState, action) {
         ...state,
         profile: { ...state.profile, availability: payload },
       };
+
     default:
       return state;
   }

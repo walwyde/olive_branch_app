@@ -1,9 +1,11 @@
-import React from 'react'
+import React from "react";
 
 const loading = () => {
   return (
-    <div>loading</div>
-  )
-}
+    <div className="progress valign-wrapper">
+      <div className="determinate" style={{ width: "70%" }}></div>
+    </div>
+  );
+};
 
-export default loading
+export default loading;
