@@ -1,12 +1,16 @@
 import {
   init_convo,
   new_message,
+  load_new_messages,
   delete_message,
   clear_messages,
   get_messages,
   init_convo_error,
+  load_messages_error,
   get_conversations,
   get_conversations_error,
+  delete_message_error,
+  delete_conversation,
 } from "../Actions/types";
 
 const initialState = {
@@ -14,7 +18,6 @@ const initialState = {
   conversations: [],
   messages: [],
   newMessages: [],
-  message: null,
   loading: true,
   error: {},
 };
@@ -34,6 +37,15 @@ export default function (state = initialState, action) {
         conversations: payload,
         loading: false,
       };
+    case load_new_messages:
+      const newMessages = payload.messages.filter((m) => {
+        return m.seen.indexOf(payload.userId) === -1;
+      });
+      return {
+        ...state,
+        newMessages: newMessages,
+        loading: false,
+      };
     case get_conversations_error:
       return {
         ...state,
@@ -44,7 +56,11 @@ export default function (state = initialState, action) {
     case new_message:
       return {
         ...state,
-        messages: [...state.messages, payload],
+        conversation: {
+          ...state.conversation,
+          messages: [payload, ...state.conversation.messages],
+        },
+        messages: [payload, ...state.messages],
         loading: false,
       };
     case get_messages:
@@ -56,7 +72,20 @@ export default function (state = initialState, action) {
     case delete_message:
       return {
         ...state,
+        conversation: {
+          ...state.conversation,
+          messages: state.conversation.messages.filter(
+            (m) => m._id !== payload
+          ),
+        },
         messages: state.messages.filter((message) => message._id !== payload),
+        loading: false,
+      };
+    case delete_message_error:
+    case load_messages_error:
+      return {
+        ...state,
+        messages: [...state.messages],
         loading: false,
       };
     case clear_messages:
@@ -70,6 +99,12 @@ export default function (state = initialState, action) {
         ...state,
         conversation: null,
         error: payload,
+        loading: false,
+      };
+    case delete_conversation:
+      return {
+        ...state,
+        conversations: state.conversations.filter((c) => c._id !== payload),
         loading: false,
       };
     default:

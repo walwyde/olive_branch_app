@@ -21,19 +21,29 @@ const Appointments = ({
   }, []);
 
   return auth.user && auth.user.isStaff ? (
+    <Fragment>
+    <Link
+    style={{ marginTop: "2rem" }}
+    to="#"
+    className="btn-small yellow darken-4 waves-effect"
+    onClick={() => history.goBack()}
+  >
+    Go Back
+  </Link>
     <div className="center">
-      <h4 className="yellow-text">Booked Appointments</h4>
+      <h5 className="yellow-text">Booked Appointments</h5>
       <BookedAppointment />
     </div>
+    </Fragment>
   ) : (
     <Fragment>
       <div className="row white-text">
         <div className="col m7">
           {!loading && doctors.length < 1 ? (
-            <h5 className="yellow-text">No Doctors Available</h5>
+            <h5 className="yellow-text center">No Doctors Available</h5>
           ) : (
             <div>
-              <h5 className="yellow-text">Available Doctors</h5>
+              <h5 className="yellow-text center">Available Doctors</h5>
               <DoctorList doctors={doctors} loading={loading} />
             </div>
           )}
@@ -47,8 +57,9 @@ const Appointments = ({
         </div>
 
         <div className="col m5">
+           
           <div className="center">
-            <h4 className="yellow-text">Booked Appointments</h4>
+            <h5 className="yellow-text">Booked Appointments</h5>
           </div>
           <BookedAppointment />
         </div>

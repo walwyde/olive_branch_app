@@ -26,12 +26,12 @@ const DoctorList = ({ doctors, newAppointment, loading }) => {
       {!loading &&
         doctors &&
         doctors.map((doctor) => (
-          <div key={doctor._id} className="card">
+          <div key={doctor._id} className="card center">
             <div className="card-content">
               <div className="card-title">
                 <Link to={`profile/${doctor._id}`} className="blue-text">
                   {" "}
-                  <h6>
+                  <h6 className="card-title">
                     {" "}
                     {doctor.title.charAt(0).toUpperCase() +
                       doctor.title.slice(1).toLowerCase()}{" "}
@@ -53,7 +53,7 @@ const DoctorList = ({ doctors, newAppointment, loading }) => {
                           style={
                             selectedTimeSlot === slot.time
                               ? {
-                                  backgroundColor: "green",
+                                  backgroundColor: "#01411C",
                                   margin: "0 auto",
                                   width: "75%",
                                   padding: "",

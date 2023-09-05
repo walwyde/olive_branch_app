@@ -7,6 +7,7 @@ exports.getProfileById = async (req, res) => {
   try {
     let profile;
     const profileId = req.params.profileId;
+    console.log(profileId);
     const staffProfile = await StaffProfile.findById(profileId).populate({
       path: "user",
       select: "-password, -__v",
@@ -22,13 +23,20 @@ exports.getProfileById = async (req, res) => {
     }
 
     if (!profile) {
+      profile = await Profile.findOne({ user: profileId }).populate({
+        path: "user",
+        select: "-password, -__v",
+      });
+    }
+
+    if (!profile) {
       return res.status(404).json({ errors: [{ msg: "No Profile Found" }] });
     } else {
       res.status(200).json(profile);
     }
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ errors: [{ msg: "Server Error" }] });
+    res.status(500).json({ errors: [{ msg: err.message }] });
   }
 };
 exports.createProfile = async (req, res) => {

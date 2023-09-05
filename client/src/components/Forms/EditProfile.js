@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import Joi from "joi-browser";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import Form from "../common/Form";
@@ -71,7 +72,7 @@ class CreateProfile extends Form {
   render() {
     console.log(this.state.user);
     const { user } = this.state;
-    const {data} = this.state;
+    const { data } = this.state;
 
     if (!user) return <Loading />;
 
@@ -81,6 +82,14 @@ class CreateProfile extends Form {
 
     return (
       <div>
+        <Link
+          style={{ marginTop: "2rem" }}
+          to="#"
+          onClick={() => window.history.back()}
+          className="btn yellow darken-3"
+        >
+          Go Back
+        </Link>
         <h3 className="center yellow-text">Edit User Profile</h3>
         <form onSubmit={(e) => this.handleSubmit(e)}>
           {this.renderInput("history", "Addiction History", "text")}

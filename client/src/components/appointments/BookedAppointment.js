@@ -22,16 +22,11 @@ const BookedAppointment = ({
     getBookedAppointments();
   }, []);
 
-  // if (!loading && !authloading && !profileLoading && user && user.isStaff && !profile)
-  //   return <Redirect to="/dashboard" />;
-
   return loading ? (
     <Loading />
   ) : (!loading && !appointments) || appointments.length === 0 ? (
     <Fragment>
-      <h5 className="center">
-        No Appointments Yet
-      </h5>
+      <h5 className="center yellow-text">No Appointments Yet</h5>
     </Fragment>
   ) : (
     !authloading &&
@@ -41,7 +36,15 @@ const BookedAppointment = ({
     appointments.length > 0 && (
       <div>
         {appointments.map((appointment) => (
-          <div className="card grey lighten-3 center" key={appointment._id}>
+          <div
+            style={{
+              backgroundColor: "#faf9f9",
+              color: "black",
+              marginTop: "2rem",
+            }}
+            className="card center"
+            key={appointment._id}
+          >
             <div className="card-content">
               <p className="card-title">Status: {appointment.status}</p>
               <p className="card-text">Time: {appointment.time}</p>
@@ -50,22 +53,25 @@ const BookedAppointment = ({
               </p>
             </div>
             <div className="card-action">
-              <Link to={`/appointments/${appointment._id}`} className="btn ">
+              <Link
+                to={`/appointments/${appointment._id}`}
+                className="btn-small left"
+              >
                 View Appointment
               </Link>
               {user && user.isStaff && (
-                <div>
+                <div className="">
                   {appointment.status !== "approved" && (
                     <button
                       onClick={() => approveAppointment(appointment._id)}
-                      className="btn "
+                      className="btn-small center"
                     >
                       Approve Appointment
                     </button>
                   )}
                   <button
                     onClick={() => deleteAppointment(appointment._id)}
-                    className="btn "
+                    className="btn-small right red accent-4"
                   >
                     Delete Appointment
                   </button>

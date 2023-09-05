@@ -1,17 +1,12 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import Joi from "joi-browser";
+import { Link } from "react-router-dom";
 import Form from "../common/Form";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
-import {
-  editProfile,
-  getProfileById,
-} from "../../Actions/profile";
-import {
-  addAvailability,
-  clearAvailability,
-} from "../../Actions/appointment";
+import { editProfile, getProfileById } from "../../Actions/profile";
+import { addAvailability, clearAvailability } from "../../Actions/appointment";
 import { loadUser } from "../../Actions/auth";
 import { Redirect } from "react-router-dom";
 import Loading from "../layouts/Loading";
@@ -141,6 +136,14 @@ class EditStaffProfile extends Form {
       <Redirect to={`/edit-profile/${this.state.data._id}`} />
     ) : (
       <div>
+        <Link
+          style={{ marginTop: "2rem" }}
+          to="#"
+          onClick={() => window.history.back()}
+          className="btn yellow darken-3"
+        >
+          Go Back
+        </Link>
         <h2 className="center yellow-text">Edit Staff Profile Form</h2>
 
         <form onSubmit={(e) => this.handleSubmit(e)}>

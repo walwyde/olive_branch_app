@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 
-app.use("/api/messages", messageRoute);
+app.use("/api/conversations", messageRoute);
 app.use("/api/auth", authRoutes);
 app.use("/api/appointment", appRoutes);
 app.use("/api/users", userRoutes);

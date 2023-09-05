@@ -1,10 +1,24 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { logout } from "../../Actions/auth";
 import { connect } from "react-redux";
+import { getBookedAppointments } from "../../Actions/appointment";
+import { loadNewMessages } from "../../Actions/messaging";
 
-const Navbar = ({ logout, auth: { user, isAuthenticated, loading } }) => {
+const Navbar = ({
+  logout,
+  auth: { user, isAuthenticated, loading },
+  appointment: { loading: apploading, appointments },
+  message: { loading: messageloading, newMessages },
+  getBookedAppointments,
+  loadNewMessages,
+}) => {
+  useEffect(() => {
+    getBookedAppointments();
+    loadNewMessages(user && user._id);
+  }, [getBookedAppointments, loadNewMessages]);
+
   const authLinks = () => (
     <div>
       <li>
@@ -16,11 +30,25 @@ const Navbar = ({ logout, auth: { user, isAuthenticated, loading } }) => {
       <li>
         <Link to="/messages">
           MESSAGES
-          <i className="material-icons left">message</i>
+          {}
+          {newMessages.length > 0 ? (
+            <span className="left new badge green darken-4">
+              {newMessages.length}
+            </span>
+          ) : (
+            <i className="material-icons left">message</i>
+          )}
         </Link>
       </li>
       <li>
-        <Link to="/appointments"> TALK TO US </Link>
+        {appointments.length > 0 && (
+          <span className="left new badge green darken-4">
+            {appointments.length}
+          </span>
+        )}
+        <Link to="/appointments">
+          {user && user.isStaff ? "APPOINTMENTS" : "TALK TO US"}
+        </Link>
       </li>
       <li>
         <Link onClick={() => logout()} to="#">
@@ -91,10 +119,21 @@ const Navbar = ({ logout, auth: { user, isAuthenticated, loading } }) => {
 
 Navbar.propTypes = {
   auth: PropTypes.object.isRequired,
+  logout: PropTypes.func.isRequired,
+  appointment: PropTypes.object.isRequired,
+  message: PropTypes.object.isRequired,
+  getBookedAppointments: PropTypes.func.isRequired,
+  loadNewMessages: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  appointment: state.appointment,
+  message: state.message,
 });
 
-export default connect(mapStateToProps, { logout })(Navbar);
+export default connect(mapStateToProps, {
+  logout,
+  getBookedAppointments,
+  loadNewMessages,
+})(Navbar);

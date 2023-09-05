@@ -42,10 +42,9 @@ const Dashboard = ({
     <div>
       <h3 className="yellow-text center">Dashboard</h3>
 
-      <hr />
 
       <div className="row">
-        <div className="col s12 m5">
+        <div className="col s12 m6">
           <div className="card panel-card hoverable">
             <div className="card-image">
               <Link to={`/edit-avatar/${profile._id}`}>
@@ -68,28 +67,26 @@ const Dashboard = ({
               </p>
               <p className="card-text">{profile.bio}</p>
             </div>
-            <div className="card-action row">
-              <div className="col s6">
+            <div className="card-action center">
+                <p className="red-text">Account Actions</p>
+
                 <Link
-                  className="btn-small yellow darken-3"
+                  className="btn-small yellow darken-3 left"
                   to={`/edit-profile/${profile._id}`}
                 >
-                  Edit Profile
+                  Edit
                 </Link>
-              </div>
-              <div className="col s6">
                 <Link
                   onClick={() => deleteAccount()}
-                  className="btn-small red darken-3"
+                  className="btn-small red darken-3 right"
                   to="#"
                 >
-                  Delete Profile
+                  Delete
                 </Link>
-              </div>
             </div>
           </div>
         </div>
-        <div className="col s12 m5 push-l2">
+        <div style={{ textAlign: "center", border: "1px solid #ccc", padding: '0.5rem', color: "white", backgroundColor: "#01411C", marginTop: "2rem" }} className="col s12 m5 push-l1">
           <span className="badge left red accent-4 white-text">Addiction</span>{" "}
           <h5>{user.addiction}</h5>
           <hr />
@@ -112,20 +109,20 @@ const Dashboard = ({
             </p>
           </div>
           <hr />
-          <span className="badge left blue white-text">doctor</span>
+          <span className="badge left blue white-text">Doctor</span>
           <div>
             <p>
-              <i className="material-icons left">male</i>
+              <i className="material-icons left">assignment_ind</i>
               {profile.docName}
             </p>
 
             <p>
-              <i className="material-icons">phone</i>
+              <i className="material-icons left">phone</i>
               {profile.docContact}
             </p>
 
             <p>
-              <i className="material-icons">pin</i>
+              <i className="material-icons left">pin</i>
               {profile.docAddress}
             </p>
           </div>
@@ -134,7 +131,7 @@ const Dashboard = ({
     </div>
   ) : !loading && !authloading && staff && profile && (
     <Fragment>
-      <h4 className="center yellow-text">User DashBoard</h4>
+      <h4 className="center yellow-text">Staff DashBoard</h4>
       <div
         style={{ width: "500px", margin: "auto", marginTop: "2rem" }}
         className="center card panel-card hoverable"
@@ -174,7 +171,7 @@ const Dashboard = ({
               className="btn-small yellow darken-3"
               to={`/edit-profile/${profile._id}`}
             >
-              Edit Profile
+              Edit
             </Link>
           </div>
           <div className="col s6">
@@ -183,7 +180,7 @@ const Dashboard = ({
               className="btn-small red darken-3"
               to="#"
             >
-              Delete Profile
+              Delete
             </Link>
           </div>
         </div>

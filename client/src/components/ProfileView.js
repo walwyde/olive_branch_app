@@ -18,7 +18,15 @@ const Dashboard = ({
     <Loading />
   ) : !loading && !profile ? (
     <div>
-      <h3 className="yellow-text center">Dashboard</h3>
+      <Link
+        style={{ marginTop: "2rem" }}
+        to="#"
+        onClick={() => window.history.back()}
+        className="btn yellow darken-3"
+      >
+        Go Back
+      </Link>
+      <h3 className="yellow-text center">Profile View</h3>
       <div className="card hoverable center">
         <div className="card-title">
           <p className="flow-text">
@@ -29,7 +37,11 @@ const Dashboard = ({
           <p> This user does not have a profile</p>
         </div>
         <div className="card-action">
-          <Link to="#" onClick={() => window.history.back()} className="btn yellow darken-3">
+          <Link
+            to="#"
+            onClick={() => window.history.back()}
+            className="btn yellow darken-3"
+          >
             Go Back
           </Link>
         </div>
@@ -41,7 +53,15 @@ const Dashboard = ({
     profile.user &&
     profile.user.isStaff ? (
     <div>
-      <h3 className="yellow-text center">Dashboard</h3>
+      <Link
+        style={{ marginTop: "2rem" }}
+        to="#"
+        onClick={() => window.history.back()}
+        className="btn yellow darken-3"
+      >
+        Go Back
+      </Link>
+      <h3 className="yellow-text center">Profile View</h3>
 
       <div className="">
         <div>
@@ -103,74 +123,98 @@ const Dashboard = ({
     profile &&
     !profile.user.isStaff && (
       <div>
-        <h3 className="yellow-text center">Dashboard</h3>
-        <div className="row">
+         <Link
+          style={{ marginTop: "2rem" }}
+          to="#"
+          onClick={() => window.history.back()}
+          className="btn yellow darken-3"
+        >
+          Go Back
+        </Link>
+        <h3 className="yellow-text center">Profile View</h3>
+        <div
+          className="row center"
+          style={{
+            backgroundColor: "#01411C",
+            padding: "1rem",
+            color: "white",
+          }}
+        >
           <div className="col-s12 m3">
-            <img
-              src={`http://localhost:3001/${profile.user.avatar}`}
-              alt="profile_avatar"
-              className="responsive"
-            />
+            <Link to={`/edit-avatar/${profile.user._id}`}>
+              <img
+                src={`http://localhost:3001/${profile.user.avatar}`}
+                alt="profile_avatar"
+                className="responsive-img circle"
+              />
+            </Link>
+
+            <div
+              style={{
+                padding: "0.5rem",
+                fontSize: "1.5rem",
+                margin: "1rem auto",
+                width: "80%",
+                border: "0.25rem solid #009000",
+                borderRadius: "0.5rem",
+              }}
+              className="green lighten-2 yellow-text"
+            >
+              {profile.user.fullname}
+            </div>
           </div>
-          <div className="col s12 m7">
+          <div className="col s12 m12">
             <span className="badge left red accent-4 white-text">
               Addiction
             </span>{" "}
-            <h5>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Assumenda, nihil.
-            </h5>
+            <p>{profile.user.addiction}</p>
+            <hr />
+            <span className="badge left purple accent-4 white-text">
+              Gender
+            </span>{" "}
+            <p>{profile.gender}</p>
+            <hr />
+            <span className="badge left green accent-4 white-text">
+              Age
+            </span>{" "}
+            <p>{profile.age}</p>
             <hr />
             <span className="badge left orange accent-4 white-text">
               History
             </span>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem
-              odit quas molestias eligendi sint similique debitis, atque dolorum
-              exercitationem dolorem minus incidunt quod recusandae nesciunt
-              culpa, cumque assumenda dolor necessitatibus.
-            </p>
+            <p>{profile.history}</p>
             <hr />
             <span className="badge left blue accent-4 white-text">Contact</span>
             <div>
               <p>
                 <i className="material-icons left">phone</i>
-                222 333 555
+                {profile.phone}
               </p>
               <p>
                 <i className="material-icons left">email</i>
-                mail@mail.com
+                {profile.email}
               </p>
               <p>
                 <i className="material-icons left">pin</i>
-                Jos, Jos South
+                {profile.address}
               </p>
             </div>
-            <hr />
-            <span className="badge left blue darken-1 white-text">
-              Medications
-            </span>
-            <ul>
-              <li>1 ---> Lorem ipsum dolor sit amet.</li>
-              <li> 2 --> Lorem ipsum dolor sit amet.</li>
-              <li>3----> Lorem ipsum dolor sit amet.</li>
-            </ul>
             <hr />
             <span className="badge left blue white-text">doctor</span>
             <div>
               <p>
-                <i className="material-icons left">male</i>
-                Doctor Sarah Smith
+                <i className="material-icons left">assignment_ind</i>
+                {profile.docName}
               </p>
 
               <p>
-                <i className="material-icons">phone</i>
-                222 333 444
+                <i className="material-icons left">phone</i>
+                {profile.docContact}
               </p>
 
               <p>
-                <i className="material-icons">pin</i>
-                Salman Specialist Hospital, Jos North
+                <i className="material-icons left">pin</i>
+                {profile.docAddress}
               </p>
             </div>
           </div>
